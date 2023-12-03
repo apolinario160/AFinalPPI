@@ -1,0 +1,26 @@
+{
+  "name": "afinalppi",
+  "version": "1.0.0",
+  "description": "Avaliação Final, Matéria Programação Para Internet- UNOESTE-FIPP",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/apolinario160/AFinalPPI.git"
+  },
+  "author": "Tiago Apolinário Gomes Filho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/apolinario160/AFinalPPI/issues"
+  },
+  "homepage": "https://github.com/apolinario160/AFinalPPI#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  }
+}

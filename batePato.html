@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Bate-Papo</title>
+</head>
+<body>
+  <h1>Bate-Papo</h1>
+  <div id="mensagens">
+    <!-- Aqui serão exibidas as mensagens -->
+  </div>
+  <form id="formMensagem">
+    <input type="text" id="mensagem" required>
+    <button type="submit">Enviar</button>
+  </form>
+  <!-- Dentro da tag <body> da página batePapo.html -->
+<script>
+    document.getElementById('formMensagem').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const mensagem = document.getElementById('mensagem').value;
+      // Simplesmente para ilustração, você precisará ajustar esta lógica
+      fetch('/postarMensagem', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ usuario: 'UsuarioAtual', mensagem }), // Enviar nome do usuário atual e mensagem
+      })
+      .then(response => {
+        // Atualizar o conteúdo da div de mensagens
+        atualizarBatePapo();
+      })
+      .catch(error => console.error('Erro ao enviar mensagem:', error));
+    });
+  
+    function atualizarBatePapo() {
+      // Lógica para buscar as mensagens do servidor e atualizar a exibição no elemento HTML #mensagens
+      fetch('/buscarMensagens')
+        .then(response => response.json())
+        .then(data => {
+          // Atualizar a exibição das mensagens na div #mensagens
+          const mensagensDiv = document.getElementById('mensagens');
+          mensagensDiv.innerHTML = '';
+          data.mensagens.forEach(mensagem => {
+            const mensagemElement = document.createElement('div');
+            mensagemElement.textContent = `${mensagem.usuario}: ${mensagem.texto}`;
+            mensagensDiv.appendChild(mensagemElement);
+          });
+        })
+        .catch(error => console.error('Erro ao buscar mensagens:', error));
+    }
+  
+    // Chamar a função para exibir as mensagens ao carregar a página
+    atualizarBatePapo();
+  </script>
+  
+</body>
+</html>
