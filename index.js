@@ -154,6 +154,21 @@ crossorigin="anonymous"></script>
   } // fim do if/else...
 }
 
+const app = express();
+app.use(cookieParser());
+
+app.use(session({
+  secret: "M1nH4Ch4v3S3cR3t4", 
+  resave: true, // atualiza a sessão mesmo que não há alterações a cada requisição 
+  saveUninitialized: true, 
+  cookie: {
+      //tempo de vida
+      maxAge: 1000 * 60 *15 // 15 minutos 
+  }
+}));
+
+
+app.use(express.urlencoded({extended: true}));
 
 app.get( '/', autenticar, (requisicao, resposta) => {
 
