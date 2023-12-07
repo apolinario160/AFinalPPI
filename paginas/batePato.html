@@ -28,6 +28,7 @@
       })
       .then(response => {
         // Atualizar o conteúdo da div de mensagens
+        
         atualizarBatePapo();
       })
       .catch(error => console.error('Erro ao enviar mensagem:', error));
@@ -35,10 +36,12 @@
   
     function atualizarBatePapo() {
       // Lógica para buscar as mensagens do servidor e atualizar a exibição no elemento HTML #mensagens
+      
       fetch('/buscarMensagens')
         .then(response => response.json())
         .then(data => {
           // Atualizar a exibição das mensagens na div #mensagens
+          
           const mensagensDiv = document.getElementById('mensagens');
           mensagensDiv.innerHTML = '';
           data.mensagens.forEach(mensagem => {

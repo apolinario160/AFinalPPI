@@ -1,160 +1,225 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const session = require('express-session');
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const porta = 3000;
+const host = '0.0.0.0';
 
+function processaCadastroUsuario(requisicao, resposta) {
+  //Extrair os dados do corpo da requisição, além de validar os dados.
+  const dados = requisicao.body;
 
+  let conteudoResposta = ``;
+  //è necessario validar os dados enviados
+  //A validação dos dados e de responsabilidade da aplição servidora
 
-app.use(cookieParser());
-app.use(session({
-  secret: 'suaChaveSecreta',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false, maxAge: 30 * 60 * 1000 }
-}));
-
-
-
-
-
-
-// Controladores
-const userController = {
-  exibirFormularioCadastro: (req, res) => {
-    // Lógica para exibir o formulário de cadastro
-    res.send('Exibindo formulário de cadastro');
-  },
-  cadastrarUsuario: (req, res) => {
-    // Lógica para capturar parâmetros, validar dados e responder com a lista de usuários cadastrados
-    res.send('Cadastro de usuário realizado com sucesso');
-  },
-  exibirBatePapo: (req, res) => {
-    // Lógica para exibir o bate-papo e as mensagens
-    res.send('Exibindo o bate-papo');
-  },
-  postarMensagem: (req, res) => {
-    // Lógica para capturar parâmetros, validar dados, adicionar mensagem na lista e responder com a página atualizada
-    res.send('Mensagem postada com sucesso');
-  }
-};
-
-// Rotas
-app.get('/cadastroUsuario', userController.exibirFormularioCadastro);
-app.post('/cadastrarUsuario', userController.cadastrarUsuario);
-app.get('/bate-papo', userController.exibirBatePapo);
-app.post('/postarMensagem', userController.postarMensagem);
-// Middleware para processar dados do formulário
-app.use(express.urlencoded({ extended: true }));
-
-// Rota para exibir o formulário
-app.get('/cadastroUsuario', (req, res) => {
-  res.sendFile(__dirname + '/cadastroUsuario.html');
-});
-
-// Rota para processar o cadastro de usuário
-app.post('/cadastrarUsuario', (req, res) => {
-  const { nome, dataNascimento, nickname } = req.body; // Capturando os dados do formulário
-
-  // Lógica para validar e adicionar o usuário à lista de cadastrados
-  // Aqui, você pode utilizar um banco de dados, uma estrutura de dados em memória, etc.
-  // Por enquanto, vou apenas mostrar os dados recebidos para demonstração
-  console.log('Dados recebidos:', { nome, dataNascimento, nickname });
-
-  // Enviando uma resposta para confirmar o cadastro (você pode alterar isso conforme sua lógica real)
-  res.send('Usuário cadastrado com sucesso!');
-});
-
-const usuariosCadastrados = []; // Lista de usuários cadastrados (simulação)
-
-// Dados simulados de usuário (em um caso real, esses dados estariam em um banco de dados)
-const usuarios = [
-    { id: 1, nome: 'usuario1', senha: 'senha123' },
-    { id: 2, nome: 'usuario2', senha: 'abc123' }
-  ];
-  
-  // Rota para login
-  app.post('/login', (req, res) => {
-    const { nome, senha } = req.body; // Dados de login enviados pelo formulário
-  
-    // Simulação de validação de login
-    const usuario = usuarios.find(u => u.nome === nome && u.senha === senha);
-  
-    if (!usuario) {
-      return res.status(401).send('Credenciais inválidas');
-    }
-  
-    // Definindo informações de sessão (simulado)
-    req.session.usuarioId = usuario.id;
-    req.session.isLoggedIn = true;
-  
-    res.send('Login bem-sucedido!');
-  });
-  
-  // Rota para logout
-  app.post('/logout', (req, res) => {
-    // Limpa os dados da sessão para fazer logout
-    req.session.destroy(err => {
-      if (err) {
-        return res.status(500).send('Erro ao fazer logout');
+  if (!(dados.nome && dados.sobrenome && dados.nomeUsuario
+      && dados.cidade && dados.uf)) {
+      //Estão faltando dados do usuário!
+      conteudoResposta = `
+          <!DOCTYPE html>
+          <html lang="pt-br">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Cadastro de usuario</title>
+              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+          </head>
+          <body>
+              <div class="container">
+                  <form action='/cadastrarUsuario' method='POST'  class="row g-3 needs-validation" novalidate>
+                      <fieldset class="border p-2">
+                          <legend class="mb-3">Cadastro de usúario</legend>
+                      
+                      <div class="col-md-4">
+                        <label for="validationCustom01" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nome" name="nome" value ="${dados.nome}"required>
+                      </div>    
+          
+          `;
+      if (!dados.nome) {
+          conteudoResposta += `
+                                      <div>
+                                          <p class = "text-danger">Por favor, informe o nome!</p>
+                                      </div>
+              `;
       }
-      res.send('Logout bem-sucedido!');
-    });
-  });
-  
 
-// Rota para processar o cadastro de usuário
-app.post('/cadastrarUsuario', (req, res) => {
-  const { nome, dataNascimento, nickname } = req.body; // Capturando os dados do formulário
+      conteudoResposta += `
+              <div class="col-md-4">
+                  <label for="nickname" class="form-label">Nickname</label>
+                 <input type="text" class="form-control" id="nickname" name="nickname" value="${dados.nicknome}" required>
+               </div>
 
-  // Simulação de validação dos dados (verifica se os campos estão preenchidos)
-  if (!nome || !dataNascimento || !nickname) {
-    return res.status(400).send('Por favor, preencha todos os campos.');
+              `;
+      if (!dados.nicknome) {
+          conteudoResposta += `
+              <div>
+                  <p class = "text-danger">Por favor, informe o Nickname!</p>
+              </div>
+              `;
+      }
+
+      conteudoResposta += `
+      <div class="col-md-3">
+        <label for="dataNascimento" class="form-label">Data de Nascimento</label>
+        <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" value=${dados.dataNascimento}" required>
+      </div>  `;
+
+      if (!dados.dataNascimento) {
+          conteudoResposta += `
+          <div>
+          <p class = "text-danger">Por favor, informe a Data de Nascimento!</p>
+          </div>`;
+      }
+      conteudoResposta += `
+      <div class="col-12 mt-3">
+       <button class="btn btn-primary" type="submit">Cadastrar</button>
+       </div>
+  </fieldset>
+</form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+crossorigin="anonymous"></script>
+
+</body>
+
+</html>`;
+      resposta.end(conteudoResposta);
+
+
   }
+  else {
 
-  // Adicionando usuário à lista (simulação)
-  const novoUsuario = { nome, dataNascimento, nickname };
-  usuariosCadastrados.push(novoUsuario);
+      const usuario = {
+          nome: dados.nome,
+          sobrenome: dados.sobrenome,
+          datanascimento: dados.dataNascimento,
 
-  // Enviando uma resposta para confirmar o cadastro
-  res.send('Usuário cadastrado com sucesso!');
+      }
+      //Indica um  novo usuário na lista de usuários ja cadastrado
+      listaUsuarios.push(usuario);
+      //retornar a lista de usuário
+      conteudoResposta = `
+  <!DOCTYPE html>
+  <html lang="pt-br">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Menu do Sistema
+    </title>
+  </head>
+  <body>
+      <h1>Lista de usuários cadastrados</h1>
+      <table class="table table-striped table-hover">
+          <thead>
+              <tr>
+                  <th>Nome</th>
+                  <th>Nickname</th>
+                  <th>Data de Nascimento</th>
+
+              </tr>
+          </thead>
+          <tbody>`;
+
+      for (const usuario of listaUsuarios) {
+          conteudoResposta += `
+                  <tr>
+                      <td>${usuario.nome}</td>
+                      <td>${usuario.nicknome}</td>
+                      <td>${usuario.dataNascimento}</td>
+
+                  </tr>
+              
+              
+              `;
+      }
+      conteudoResposta += `
+              </tbody>
+          </table>
+          <a class="btn btn-primary" href="/" role="button">Voltar ao Menu...</a>
+          <a class="btn btn-primary" href="/cadastraUsuario.html" role="button">Continuar cadastrando</a>
+      </body>
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+
+   </html>`;
+
+      resposta.end(conteudoResposta);
+  } // fim do if/else...
+}
+
+
+app.get( '/', autenticar, (requisicao, resposta) => {
+
+
+  const dataUltimoAcesso = requisicao.cookies.DataUltimoAcesso;
+  const data  = new Date ();
+  resposta.cookie("DataUltimoAcesso", data.toLocaleString(), {
+      maxAge : 1000 * 60 * 60 * 24 * 30,
+      httpOnly : true
+  });
+  resposta.end(`
+  <!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menu do Sistema
+</title>
+</head>
+<body>
+<h1>MENU</h1>
+<ul>
+  <li><a href="/cadastraUsuario.html">Cadastrar Usuário</a></li>
+</ul>
+</body>
+  <footer>
+      <p> Seu último acesso foi em ${dataUltimoAcesso}</p>
+  </footer>
+</html>
+  `)
 });
 
-// Rota para exibir o bate-papo
-app.get('/bate-papo', (req, res) => {
-    res.sendFile(__dirname + '/batePapo.html');
-  });
+//endopoint login que ira processar o login da aplicação
+app.post('/login', (requisicao, resposta) => {
+  const usuario = requisicao.body.usuario;
+  const senha  = requisicao.body.senha;
 
-  // Rota para postar uma mensagem no bate-papo
-app.post('/postarMensagem', (req, res) => {
-    const { usuario, mensagem } = req.body; // Capturando os dados da mensagem
-  
-    // Validação básica da mensagem
-    if (!usuario || !mensagem) {
-      return res.status(400).send('Por favor, preencha todos os campos.');
-    }
-  
-    // Adicionar lógica para armazenar a mensagem e atualizar o bate-papo
-    // ...
-  
-    // Responder com a página do bate-papo atualizada
-    res.redirect('/bate-papo');
-  });
-  
-// Rota para buscar as mensagens no servidor
-app.get('/buscarMensagens', (req, res) => {
-    // Aqui você buscaria as mensagens armazenadas no servidor (por exemplo, em um banco de dados)
-    const mensagens = [
-      { usuario: 'Usuário1', texto: 'Olá, tudo bem?' },
-      { usuario: 'Usuário2', texto: 'Sim, e você?' },
-      // ...
-    ];
-  
-    res.json({ mensagens }); // Enviar as mensagens como resposta
-  });
-  
-// Inicialização do servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+
+  if( usuario && senha && (usuario ==='tiago') && (senha === '123')){
+      requisicao.session.usuarioAutenticado = true;
+      resposta.redirect('/');
+
+
+  }
+  else{
+      resposta.end(`
+          <!DOCTYPE html>
+              <head>
+                  <meta charset="UTF-8">
+                  <title>Falha na autenticação</title>
+              </head>
+              <body>
+                  <h1>Usuário ou senha inválido!</h1>
+                  <a href = "/login.html"> Voltar ao  login</a>
+              </body>
+          
+           </html>
+      
+      `);
+  }
+})
+
+//Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
+
+app.post( '/cadastrarUsuario', autenticar, processaCadastroUsuario);
+
+app.listen(porta, host, () => {
+    console.log(`Servidor executando na url http://${host}:${porta}`);
 });
