@@ -35,8 +35,7 @@ function processaCadastroUsuario(requisicao, resposta) {
   //è necessario validar os dados enviados
   //A validação dos dados e de responsabilidade da aplição servidora
 
-  if (!(dados.nome && dados.sobrenome && dados.nomeUsuario
-      && dados.cidade && dados.uf)) {
+  if (!(dados.nome && dados.nickname && dados.dataNascimento)) {
       //Estão faltando dados do usuário!
       conteudoResposta = `
           <!DOCTYPE html>
@@ -122,7 +121,7 @@ crossorigin="anonymous"></script>
       const usuario = {
           nome: dados.nome,
           nickname: dados.nickname,
-          datanascimento: dados.dataNascimento,
+          dataNascimento: dados.dataNascimento,
 
       }
       //Indica um  novo usuário na lista de usuários ja cadastrado
@@ -222,40 +221,6 @@ app.get( '/', autenticar, (requisicao, resposta) => {
 });
 
 //endopoint login que ira processar o login da aplicação
-
-/*
-app.post('/login', (requisicao, resposta) => {
-  const usuario = requisicao.body.usuario;
-  const senha  = requisicao.body.senha;
-
-
-  if( usuario && senha && (usuario ==='tiago') && (senha === '123')){
-      requisicao.session.usuarioAutenticado = true;
-      resposta.redirect('/');
-
-
-  }
-  else{
-      resposta.end(`
-          <!DOCTYPE html>
-              <head>
-                  <meta charset="UTF-8">
-                  <title>Falha na autenticação</title>
-              </head>
-              <body>
-                  <h1>Usuário ou senha inválido!</h1>
-                  <a href = "/login.html"> Voltar ao  login</a>
-              </body>
-          
-           </html>
-      
-      `);
-  }
-})
-*/
-
-
-app.use(express.static(diretorioPublico));
 
 app.use(express.static(diretorioPublico));
 
