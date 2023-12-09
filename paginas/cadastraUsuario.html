@@ -13,10 +13,10 @@
   <div class="container">
     <form action='/cadastrarUsuario' method='POST' class="row g-3 needs-validation" novalidate>
       <fieldset class="border p-2">
-        <legend class="mb-3">Cadastro de usúario</legend>
-
+        <legend class="mb-3">Cadastro de usuário</legend>
+  
         <div class="col-md-4">
-          <label for="validationCustom01" class="form-label">Nome</label>
+          <label for="nome" class="form-label">Nome</label>
           <input type="text" class="form-control" id="nome" name="nome" required>
         </div>
         <div class="col-md-4">
@@ -26,14 +26,15 @@
         <div class="col-md-3">
           <label for="dataNascimento" class="form-label">Data de Nascimento</label>
           <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" value="31/12/1990" required>
-      </div>
-      
+        </div>
+        
         <div class="col-12 mt-3">
           <button class="btn btn-primary" type="submit">Cadastrar</button>
         </div>
       </fieldset>
     </form>
   </div>
+  
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
     crossorigin="anonymous"></script>

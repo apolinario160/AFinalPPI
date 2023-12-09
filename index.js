@@ -1,9 +1,31 @@
-import express from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
+import express from 'express';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
+const app = express();
 const porta = 3000;
 const host = '0.0.0.0';
+
+
+
+
+var listaUsuarios = [];
+
+// Verifique onde você está utilizando a função fileURLToPath e se está correto
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const diretorioPublico = path.join(__dirname, 'paginas');
+
+
+app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(diretorioPublico, 'login.html'));
+  });
+  
+  
+
+app.use(express.static(diretorioPublico));
 
 function processaCadastroUsuario(requisicao, resposta) {
   //Extrair os dados do corpo da requisição, além de validar os dados.
@@ -48,11 +70,11 @@ function processaCadastroUsuario(requisicao, resposta) {
       conteudoResposta += `
               <div class="col-md-4">
                   <label for="nickname" class="form-label">Nickname</label>
-                 <input type="text" class="form-control" id="nickname" name="nickname" value="${dados.nicknome}" required>
+                 <input type="text" class="form-control" id="nickname" name="nickname" value="${dados.nickname}" required>
                </div>
 
               `;
-      if (!dados.nicknome) {
+      if (!dados.nickname) {
           conteudoResposta += `
               <div>
                   <p class = "text-danger">Por favor, informe o Nickname!</p>
@@ -61,10 +83,12 @@ function processaCadastroUsuario(requisicao, resposta) {
       }
 
       conteudoResposta += `
-      <div class="col-md-3">
-        <label for="dataNascimento" class="form-label">Data de Nascimento</label>
-        <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" value=${dados.dataNascimento}" required>
-      </div>  `;
+             <div class="col-md-3">
+                <label for="dataNascimento" class="form-label">Data de Nascimento</label>
+                 <input type="text" class="form-control" id="dataNascimento" name="dataNascimento" value="${dados.dataNascimento}" required>
+             </div>
+             `;
+
 
       if (!dados.dataNascimento) {
           conteudoResposta += `
@@ -97,7 +121,7 @@ crossorigin="anonymous"></script>
 
       const usuario = {
           nome: dados.nome,
-          sobrenome: dados.sobrenome,
+          nickname: dados.nickname,
           datanascimento: dados.dataNascimento,
 
       }
@@ -131,7 +155,7 @@ crossorigin="anonymous"></script>
           conteudoResposta += `
                   <tr>
                       <td>${usuario.nome}</td>
-                      <td>${usuario.nicknome}</td>
+                      <td>${usuario.nickname}</td>
                       <td>${usuario.dataNascimento}</td>
 
                   </tr>
@@ -154,21 +178,17 @@ crossorigin="anonymous"></script>
   } // fim do if/else...
 }
 
-const app = express();
+app.use(express.static(diretorioPublico));
 app.use(cookieParser());
-
 app.use(session({
-  secret: "M1nH4Ch4v3S3cR3t4", 
-  resave: true, // atualiza a sessão mesmo que não há alterações a cada requisição 
-  saveUninitialized: true, 
+  secret: "M1nH4Ch4v3S3cR3t4",
+  resave: true,
+  saveUninitialized: true,
   cookie: {
-      //tempo de vida
-      maxAge: 1000 * 60 *15 // 15 minutos 
+    maxAge: 1000 * 60 * 15 // 15 minutos
   }
 }));
-
-
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
 app.get( '/', autenticar, (requisicao, resposta) => {
 
@@ -202,6 +222,8 @@ app.get( '/', autenticar, (requisicao, resposta) => {
 });
 
 //endopoint login que ira processar o login da aplicação
+
+/*
 app.post('/login', (requisicao, resposta) => {
   const usuario = requisicao.body.usuario;
   const senha  = requisicao.body.senha;
@@ -230,6 +252,56 @@ app.post('/login', (requisicao, resposta) => {
       `);
   }
 })
+*/
+
+
+app.use(express.static(diretorioPublico));
+
+app.use(express.static(diretorioPublico));
+
+
+// Rota de login
+app.post('/login', (requisicao, resposta) => {
+    const usuario = requisicao.body.usuario;
+    const senha = requisicao.body.senha;
+  
+    console.log('Usuário:', usuario);
+    console.log('Senha:', senha);
+  
+    if (usuario === 'tiago' && senha === '123') {
+      requisicao.session.usuarioAutenticado = true;
+      resposta.redirect('/');
+    } else {
+      resposta.end(`
+        <!DOCTYPE html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Falha na autenticação</title>
+        </head>
+        <body>
+            <h1>Usuário ou senha inválido!</h1>
+            <a href="/login.html">Voltar ao login</a>
+        </body>
+     </html>
+      `);
+    }
+});
+
+  
+  
+
+
+  function autenticar(requisicao, resposta, next) {
+    if (requisicao.session && requisicao.session.usuarioAutenticado) {
+        // Se o usuário estiver autenticado na sessão, permita o acesso à rota
+        next();
+    } else {
+        // Se não estiver autenticado, redirecione para a página de login
+        resposta.redirect('/login.html'); // Redirecionar para a página de login
+    }
+}
+
+    
 
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
