@@ -273,16 +273,17 @@ app.get('/batePapo.html', (req, res) => {
 });
 
 
-app.post('/enviarMensagem', (req, res, next) => {
-    if (usuarioEstiverAutenticado) {
-      // Lógica de envio de mensagem
-      res.redirect('/batePapo');
+app.post('/enviarMensagem', autenticar, (req, res, next) => {
+    if (req.session.usuarioAutenticado) {
+      // Lógica de envio de mensagem se o usuário estiver autenticado
+      res.redirect('/batePapo.html'); // <-- Corrigir a rota de redirecionamento aqui
     } else {
-      // Redirecionar para página de login ou enviar mensagem de erro
+      // Redirecionar para página de login se o usuário não estiver autenticado
       res.redirect('/login.html');
     }
-  });
-  
+});
+
+
   // Outra rota para '/enviarMensagem', mas com um tratamento diferente
   app.post('/enviarMensagemOutraRota', (req, res) => {
     const usuario = req.body.usuario;
@@ -294,6 +295,11 @@ app.post('/enviarMensagem', (req, res, next) => {
     res.redirect('/batePapo'); // Redirecionar de volta para a página de bate-papo
   });
   
+ 
+
+  app.get('/listaUsuarios', autenticar, (req, res) => {
+    res.json(listaUsuarios);
+  });
   
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'

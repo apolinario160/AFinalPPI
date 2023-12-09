@@ -40,6 +40,33 @@
       location.reload(); // Recarregar a página após enviar a mensagem
     });
   </script>
+  
+
+<script>
+  // Lógica para buscar e preencher o select com usuários cadastrados
+  window.addEventListener('DOMContentLoaded', async () => {
+    try {
+      const response = await fetch('/listaUsuarios'); // Rota no seu back-end para buscar a lista de usuários
+      if (!response.ok) {
+        throw new Error('Erro ao buscar usuários');
+      }
+      const usuarios = await response.json();
+
+      const selectUsuario = document.getElementById('selectUsuario');
+      usuarios.forEach(usuario => {
+        const option = document.createElement('option');
+        option.value = usuario.id; // Defina o valor do usuário
+        option.textContent = usuario.nome; // Defina o nome do usuário
+        selectUsuario.appendChild(option);
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  // Restante do seu código...
+</script>
+
 </body>
 
 </html>
