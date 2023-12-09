@@ -211,6 +211,7 @@ app.get( '/', autenticar, (requisicao, resposta) => {
 <h1>MENU</h1>
 <ul>
   <li><a href="/cadastraUsuario.html">Cadastrar Usuário</a></li>
+  <li><a href="/batepapo">Ir para Bate-Papo</a></li>
 </ul>
 </body>
   <footer>
@@ -280,7 +281,7 @@ app.get('/batepapo', (req, res) => {
     res.redirect('/batepapo'); // Redirecionar de volta para a página de bate-papo
   });
 
-  app.post('/enviarMensagem', (req, res) => {
+  /*app.post('/enviarMensagem', (req, res) => {
     const usuario = req.body.usuario;
     const mensagem = req.body.mensagem;
   
@@ -288,13 +289,13 @@ app.get('/batepapo', (req, res) => {
     // Exemplo: listaMensagens.push({ usuario, mensagem });
     
     res.redirect('/batepapo'); // Redirecionamento para a página de bate-papo
-  });
+  });*/
   
   app.post('/enviarMensagem', autenticar, (req, res) => {
     // Lógica de envio de mensagem
   });
   
-  function autenticar(req, res, next) {
+/*  function autenticar(req, res, next) {
     if (req.session && req.session.usuarioAutenticado) {
       next(); // Permite o acesso à rota se autenticado
     } else {
@@ -302,7 +303,7 @@ app.get('/batepapo', (req, res) => {
     }
   }
   
-    
+  */  
 
     
 
