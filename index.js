@@ -184,7 +184,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 1000 * 60 * 15 // 15 minutos
+    maxAge: 1000 * 60 * 30 // 30 minutos
   }
 }));
 app.use(express.urlencoded({ extended: true }));
@@ -265,6 +265,44 @@ app.post('/login', (requisicao, resposta) => {
         resposta.redirect('/login.html'); // Redirecionar para a página de login
     }
 }
+
+// Adicione esta rota abaixo das outras rotas existentes
+app.get('/batepapo', (req, res) => {
+    res.sendFile(path.join(diretorioPublico, 'batepapo.html'));
+  });
+  app.post('/enviarMensagem', (req, res) => {
+    const usuario = req.body.usuario;
+    const mensagem = req.body.mensagem;
+  
+    // Lógica para salvar a mensagem em um array ou banco de dados
+    // ...
+  
+    res.redirect('/batepapo'); // Redirecionar de volta para a página de bate-papo
+  });
+
+  app.post('/enviarMensagem', (req, res) => {
+    const usuario = req.body.usuario;
+    const mensagem = req.body.mensagem;
+  
+    // Lógica para salvar a mensagem em um array, banco de dados, etc.
+    // Exemplo: listaMensagens.push({ usuario, mensagem });
+    
+    res.redirect('/batepapo'); // Redirecionamento para a página de bate-papo
+  });
+  
+  app.post('/enviarMensagem', autenticar, (req, res) => {
+    // Lógica de envio de mensagem
+  });
+  
+  function autenticar(req, res, next) {
+    if (req.session && req.session.usuarioAutenticado) {
+      next(); // Permite o acesso à rota se autenticado
+    } else {
+      res.redirect('/login.html'); // Redireciona para a página de login se não autenticado
+    }
+  }
+  
+    
 
     
 

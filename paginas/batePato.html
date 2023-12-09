@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bate Papo</title>
+  <title>Bate-papo</title>
 </head>
-<body>
 
+<body>
+  <h1>Bate-papo</h1>
+  <div id="mensagens">
+    <!-- Exibição das mensagens será carregada aqui -->
+  </div>
+  <form action="/enviarMensagem" method="POST">
+    <select name="usuario" id="selectUsuario">
+      <!-- Opções preenchidas dinamicamente -->
+    </select>
+    <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
+    <button type="submit">Enviar</button>
+  </form>
   
+
+  <script>
+    // Lógica para carregar usuários e mensagens
+    // ...
+
+    // Lógica para recarregar a página após enviar mensagem
+    const form = document.getElementById('formMensagem');
+    form.addEventListener('submit', () => {
+      location.reload(); // Recarregar a página após enviar a mensagem
+    });
+  </script>
 </body>
+
 </html>
