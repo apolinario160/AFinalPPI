@@ -12,7 +12,8 @@ const host = '0.0.0.0';
 
 
 var listaUsuarios = [];
-const listaMensagens = [];
+var listaMensagens = [];
+
 
 // Verifique onde você está utilizando a função fileURLToPath e se está correto
 const __filename = fileURLToPath(import.meta.url);
@@ -303,26 +304,47 @@ app.post('/enviarMensagem', autenticar, (req, res, next) => {
   });
 
 // Rota para buscar mensagens
+
 app.get('/mensagens', autenticar, (req, res) => {
   res.json(listaMensagens);
 });
 
+
+// Rota para enviar mensagem
 // Rota para enviar mensagem
 app.post('/enviarMensagem', autenticar, (req, res) => {
   const { usuario, mensagem } = req.body;
-  
+
   // Obtendo a data e hora atuais
   const dataHoraAtual = new Date();
   const dataFormatada = dataHoraAtual.toLocaleString(); // Formatação da data e hora
-  
+
   // Adicionando a data e hora à mensagem antes de armazená-la
   const mensagemComData = `${dataFormatada} - ${mensagem}`;
-  
+
   // Aqui você pode processar e armazenar a mensagem como preferir
   listaMensagens.push({ usuario, texto: mensagemComData });
-  
+
   res.sendStatus(200); // Responde com status 200 (OK)
 });
+
+
+app.post('/enviarMensagem', autenticar, (req, res) => {
+  const { usuario, mensagem } = req.body;
+
+  // Obtendo a data e hora atuais
+  const dataHoraAtual = new Date();
+  const dataFormatada = dataHoraAtual.toLocaleString(); // Formatação da data e hora
+
+  // Adicionando a data e hora à mensagem antes de armazená-la
+  const mensagemComData = `${dataFormatada} - ${mensagem}`;
+
+  // Aqui você pode processar e armazenar a mensagem como preferir
+  listaMensagens.push({ usuario, texto: mensagemComData });
+
+  res.sendStatus(200); // Responde com status 200 (OK)
+});
+
 
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'

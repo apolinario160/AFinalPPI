@@ -5,25 +5,67 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bate-papo</title>
-  <!-- Links do Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <style>
     /* Estilos adicionais para dividir a página em duas partes */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
     .chat-container {
       display: flex;
       justify-content: space-between;
+      margin: 20px;
     }
 
     .chat-input {
       flex: 0 0 45%; /* Largura do container de entrada de mensagem */
     }
 
+    .chat-input form {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .chat-input select,
+    .chat-input input[type="text"],
+    .chat-input button {
+      margin-right: 5px;
+      padding: 5px;
+      border-radius: 3px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    .chat-input select {
+      flex: 1;
+    }
+
     .chat-messages {
       flex: 0 0 45%; /* Largura do container de exibição de mensagens */
+      border: 1px solid #ccc;
+      padding: 10px;
+      overflow-y: auto;
+      max-height: 300px;
+    }
+
+    .chat-messages div {
+      margin-bottom: 5px;
     }
 
     /* Outros estilos conforme necessário para personalizar a aparência */
+    #mensagemEnviada {
+      margin: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      display: none;
+    }
   </style>
 </head>
 
@@ -42,66 +84,66 @@
     </div>
     <!-- Container para exibição de mensagens -->
     <div class="chat-messages" id="mensagens">
+      <h2>Historico de conversa:</h2>
       <!-- Exibição das mensagens será carregada aqui -->
     </div>
   </div>
   <!-- Área para exibir a mensagem que será enviada -->
-  <div id="mensagemEnviada" style="display: none;">
+  <div id="mensagemEnviada">
     <h3>Mensagem a ser enviada:</h3>
     <p><strong>Usuário:</strong> <span id="usuarioEnviado"></span></p>
     <p><strong>Mensagem:</strong> <span id="textoEnviado"></span></p>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-  crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-  integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-  crossorigin="anonymous"></script>
-  
 
-<script>
-  // Lógica para buscar e preencher o select com usuários cadastrados
-  window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const response = await fetch('/listaUsuarios');
-    if (!response.ok) {
-      throw new Error('Erro ao buscar usuários');
-    }
-    const usuarios = await response.json();
+  <script>
+    // Lógica para buscar e preencher o select com usuários cadastrados
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/listaUsuarios');
+        if (!response.ok) {
+          throw new Error('Erro ao buscar usuários');
+        }
+        const usuarios = await response.json();
 
-    const selectUsuario = document.getElementById('selectUsuario');
-    usuarios.forEach(usuario => {
-      const option = document.createElement('option');
-      option.value = usuario.id; // Defina o valor do usuário
-      option.textContent = usuario.nome; // Defina o nome do usuário
-      selectUsuario.appendChild(option);
+        const selectUsuario = document.getElementById('selectUsuario');
+        usuarios.forEach(usuario => {
+          const option = document.createElement('option');
+          option.value = usuario.id; // Defina o valor do usuário
+          option.textContent = usuario.nome; // Defina o nome do usuário
+          selectUsuario.appendChild(option);
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
-  } catch (error) {
-    console.error(error);
-  }
-});
 
-  // Lógica para buscar e exibir as mensagens existentes
-  window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const response = await fetch('/mensagens');
-    if (!response.ok) {
-      throw new Error('Erro ao buscar mensagens');
-    }
-    const mensagens = await response.json();
+    // Lógica para buscar e exibir as mensagens existentes
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const response = await fetch('/mensagens');
+        if (!response.ok) {
+          throw new Error('Erro ao buscar mensagens');
+        }
+        const mensagens = await response.json();
 
-    const divMensagens = document.getElementById('mensagens');
-    mensagens.forEach(mensagem => {
-      const mensagemElement = document.createElement('div');
-      mensagemElement.textContent = `${mensagem.usuario}: ${mensagem.texto}`;
-      divMensagens.appendChild(mensagemElement);
+        const divMensagens = document.getElementById('mensagens');
+        mensagens.forEach(mensagem => {
+          const mensagemElement = document.createElement('div');
+          const usuarioElement = document.createElement('span');
+          const textoElement = document.createElement('p');
+
+          usuarioElement.textContent = `${mensagem.usuario}: `;
+          textoElement.textContent = mensagem.texto;
+
+          mensagemElement.appendChild(usuarioElement);
+          mensagemElement.appendChild(textoElement);
+
+          divMensagens.appendChild(mensagemElement);
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-
 
     // Lógica para enviar novas mensagens...
     const form = document.querySelector('form');
@@ -129,14 +171,12 @@
           throw new Error('Erro ao enviar mensagem');
         }
 
-        location.reload(); // Recarregar a página após enviar a mensagem (opcional)
+       // location.reload(); // Recarregar a página após enviar a mensagem (opcional)
       } catch (error) {
         console.error(error);
       }
     });
-
-  // Restante do seu código...
-</script>
+  </script>
 
 </body>
 
