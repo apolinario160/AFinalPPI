@@ -211,7 +211,7 @@ app.get( '/', autenticar, (requisicao, resposta) => {
 <h1>MENU</h1>
 <ul>
   <li><a href="/cadastraUsuario.html">Cadastrar Usuário</a></li>
-  <li><a href="/batepapo">Ir para Bate-Papo</a></li>
+  <li><a href="/batePapo.html">Ir para Bate-Papo</a></li>
 </ul>
 </body>
   <footer>
@@ -268,45 +268,34 @@ app.post('/login', (requisicao, resposta) => {
 }
 
 // Adicione esta rota abaixo das outras rotas existentes
-app.get('/batepapo', (req, res) => {
-    res.sendFile(path.join(diretorioPublico, 'batepapo.html'));
+app.get('/batePapo.html', (req, res) => {
+    res.sendFile(path.join(diretorioPublico, 'batePapo.html'));
+});
+
+
+app.post('/enviarMensagem', (req, res, next) => {
+    if (usuarioEstiverAutenticado) {
+      // Lógica de envio de mensagem
+      res.redirect('/batePapo');
+    } else {
+      // Redirecionar para página de login ou enviar mensagem de erro
+      res.redirect('/login.html');
+    }
   });
-  app.post('/enviarMensagem', (req, res) => {
+  
+  // Outra rota para '/enviarMensagem', mas com um tratamento diferente
+  app.post('/enviarMensagemOutraRota', (req, res) => {
     const usuario = req.body.usuario;
     const mensagem = req.body.mensagem;
   
     // Lógica para salvar a mensagem em um array ou banco de dados
     // ...
   
-    res.redirect('/batepapo'); // Redirecionar de volta para a página de bate-papo
-  });
-
-  /*app.post('/enviarMensagem', (req, res) => {
-    const usuario = req.body.usuario;
-    const mensagem = req.body.mensagem;
-  
-    // Lógica para salvar a mensagem em um array, banco de dados, etc.
-    // Exemplo: listaMensagens.push({ usuario, mensagem });
-    
-    res.redirect('/batepapo'); // Redirecionamento para a página de bate-papo
-  });*/
-  
-  app.post('/enviarMensagem', autenticar, (req, res) => {
-    // Lógica de envio de mensagem
+    res.redirect('/batePapo'); // Redirecionar de volta para a página de bate-papo
   });
   
-/*  function autenticar(req, res, next) {
-    if (req.session && req.session.usuarioAutenticado) {
-      next(); // Permite o acesso à rota se autenticado
-    } else {
-      res.redirect('/login.html'); // Redireciona para a página de login se não autenticado
-    }
-  }
   
-  */  
-
-    
-
+  
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
 app.post( '/cadastrarUsuario', autenticar, processaCadastroUsuario);
