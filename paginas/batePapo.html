@@ -22,6 +22,12 @@
     <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
     <button type="submit">Enviar</button>
   </form>
+  <div id="mensagemEnviada" style="display: none;">
+    <!-- Área para exibir a mensagem que será enviada -->
+    <h3>Mensagem a ser enviada:</h3>
+    <p><strong>Usuário:</strong> <span id="usuarioEnviado"></span></p>
+    <p><strong>Mensagem:</strong> <span id="textoEnviado"></span></p>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
@@ -30,39 +36,84 @@
     integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
     crossorigin="anonymous"></script>
 
-  <script>
-    // Lógica para carregar usuários e mensagens
-    // ...
-
-    // Lógica para recarregar a página após enviar mensagem
-    const form = document.querySelector('form');
-    form.addEventListener('submit', () => {
-      location.reload(); // Recarregar a página após enviar a mensagem
-    });
-  </script>
+ 
   
 
 <script>
   // Lógica para buscar e preencher o select com usuários cadastrados
   window.addEventListener('DOMContentLoaded', async () => {
-    try {
-      const response = await fetch('/listaUsuarios'); // Rota no seu back-end para buscar a lista de usuários
-      if (!response.ok) {
-        throw new Error('Erro ao buscar usuários');
-      }
-      const usuarios = await response.json();
-
-      const selectUsuario = document.getElementById('selectUsuario');
-      usuarios.forEach(usuario => {
-        const option = document.createElement('option');
-        option.value = usuario.id; // Defina o valor do usuário
-        option.textContent = usuario.nome; // Defina o nome do usuário
-        selectUsuario.appendChild(option);
-      });
-    } catch (error) {
-      console.error(error);
+  try {
+    const response = await fetch('/listaUsuarios');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar usuários');
     }
-  });
+    const usuarios = await response.json();
+
+    const selectUsuario = document.getElementById('selectUsuario');
+    usuarios.forEach(usuario => {
+      const option = document.createElement('option');
+      option.value = usuario.id; // Defina o valor do usuário
+      option.textContent = usuario.nome; // Defina o nome do usuário
+      selectUsuario.appendChild(option);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+  // Lógica para buscar e exibir as mensagens existentes
+  window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/mensagens');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar mensagens');
+    }
+    const mensagens = await response.json();
+
+    const divMensagens = document.getElementById('mensagens');
+    mensagens.forEach(mensagem => {
+      const mensagemElement = document.createElement('div');
+      mensagemElement.textContent = `${mensagem.usuario}: ${mensagem.texto}`;
+      divMensagens.appendChild(mensagemElement);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+
+
+    // Lógica para enviar novas mensagens...
+    const form = document.querySelector('form');
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const usuario = document.getElementById('selectUsuario').value;
+      const mensagem = document.querySelector('input[name="mensagem"]').value;
+
+      // Atualização da área para exibir a mensagem que será enviada
+      document.getElementById('usuarioEnviado').textContent = usuario;
+      document.getElementById('textoEnviado').textContent = mensagem;
+      document.getElementById('mensagemEnviada').style.display = 'block';
+
+      try {
+        const response = await fetch('/enviarMensagem', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ usuario, mensagem })
+        });
+
+        if (!response.ok) {
+          throw new Error('Erro ao enviar mensagem');
+        }
+
+        // location.reload(); // Recarregar a página após enviar a mensagem (opcional)
+      } catch (error) {
+        console.error(error);
+      }
+    });
 
   // Restante do seu código...
 </script>

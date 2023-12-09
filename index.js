@@ -12,6 +12,7 @@ const host = '0.0.0.0';
 
 
 var listaUsuarios = [];
+const listaMensagens = [];
 
 // Verifique onde você está utilizando a função fileURLToPath e se está correto
 const __filename = fileURLToPath(import.meta.url);
@@ -300,7 +301,21 @@ app.post('/enviarMensagem', autenticar, (req, res, next) => {
   app.get('/listaUsuarios', autenticar, (req, res) => {
     res.json(listaUsuarios);
   });
+
+// Rota para buscar mensagens
+app.get('/mensagens', autenticar, (req, res) => {
+  res.json(listaMensagens);
+});
+
+// Rota para enviar mensagem
+app.post('/enviarMensagem', autenticar, (req, res) => {
+  const { usuario, mensagem } = req.body;
   
+  // Aqui você pode processar e armazenar a mensagem como preferir
+  listaMensagens.push({ usuario, texto: mensagem });
+  
+  res.sendStatus(200); // Responde com status 200 (OK)
+});
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
