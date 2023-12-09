@@ -8,35 +8,55 @@
   <!-- Links do Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <style>
+    /* Estilos adicionais para dividir a página em duas partes */
+    .chat-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chat-input {
+      flex: 0 0 45%; /* Largura do container de entrada de mensagem */
+    }
+
+    .chat-messages {
+      flex: 0 0 45%; /* Largura do container de exibição de mensagens */
+    }
+
+    /* Outros estilos conforme necessário para personalizar a aparência */
+  </style>
 </head>
 
 <body>
   <h1>Bate-papo</h1>
-  <div id="mensagens">
-    <!-- Exibição das mensagens será carregada aqui -->
+  <div class="chat-container">
+    <!-- Container para entrada de mensagem -->
+    <div class="chat-input">
+      <form action="/enviarMensagem" method="POST">
+        <select name="usuario" id="selectUsuario">
+          <!-- Opções preenchidas dinamicamente -->
+        </select>
+        <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+    <!-- Container para exibição de mensagens -->
+    <div class="chat-messages" id="mensagens">
+      <!-- Exibição das mensagens será carregada aqui -->
+    </div>
   </div>
-  <form action="/enviarMensagem" method="POST">
-    <select name="usuario" id="selectUsuario">
-      <!-- Opções preenchidas dinamicamente -->
-    </select>
-    <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
-    <button type="submit">Enviar</button>
-  </form>
+  <!-- Área para exibir a mensagem que será enviada -->
   <div id="mensagemEnviada" style="display: none;">
-    <!-- Área para exibir a mensagem que será enviada -->
     <h3>Mensagem a ser enviada:</h3>
     <p><strong>Usuário:</strong> <span id="usuarioEnviado"></span></p>
     <p><strong>Mensagem:</strong> <span id="textoEnviado"></span></p>
   </div>
-
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
-    integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
-    crossorigin="anonymous"></script>
-
- 
+  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+  integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+  crossorigin="anonymous"></script>
   
 
 <script>
@@ -109,7 +129,7 @@
           throw new Error('Erro ao enviar mensagem');
         }
 
-        // location.reload(); // Recarregar a página após enviar a mensagem (opcional)
+        location.reload(); // Recarregar a página após enviar a mensagem (opcional)
       } catch (error) {
         console.error(error);
       }

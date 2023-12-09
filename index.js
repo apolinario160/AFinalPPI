@@ -311,11 +311,19 @@ app.get('/mensagens', autenticar, (req, res) => {
 app.post('/enviarMensagem', autenticar, (req, res) => {
   const { usuario, mensagem } = req.body;
   
+  // Obtendo a data e hora atuais
+  const dataHoraAtual = new Date();
+  const dataFormatada = dataHoraAtual.toLocaleString(); // Formatação da data e hora
+  
+  // Adicionando a data e hora à mensagem antes de armazená-la
+  const mensagemComData = `${dataFormatada} - ${mensagem}`;
+  
   // Aqui você pode processar e armazenar a mensagem como preferir
-  listaMensagens.push({ usuario, texto: mensagem });
+  listaMensagens.push({ usuario, texto: mensagemComData });
   
   res.sendStatus(200); // Responde com status 200 (OK)
 });
+
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
