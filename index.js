@@ -274,18 +274,6 @@ app.get('/batePapo.html', (req, res) => {
     res.sendFile(path.join(diretorioPublico, 'batePapo.html'));
 });
 
-
-app.post('/enviarMensagem', autenticar, (req, res, next) => {
-    if (req.session.usuarioAutenticado) {
-      // Lógica de envio de mensagem se o usuário estiver autenticado
-      res.redirect('/batePapo.html'); // <-- Corrigir a rota de redirecionamento aqui
-    } else {
-      // Redirecionar para página de login se o usuário não estiver autenticado
-      res.redirect('/login.html');
-    }
-});
-
-
   // Outra rota para '/enviarMensagem', mas com um tratamento diferente
   app.post('/enviarMensagemOutraRota', (req, res) => {
     const usuario = req.body.usuario;
@@ -327,25 +315,6 @@ app.post('/enviarMensagem', autenticar, (req, res) => {
 
   res.sendStatus(200); // Responde com status 200 (OK)
 });
-
-
-app.post('/enviarMensagem', autenticar, (req, res) => {
-  const { usuario, mensagem } = req.body;
-
-  // Obtendo a data e hora atuais
-  const dataHoraAtual = new Date();
-  const dataFormatada = dataHoraAtual.toLocaleString(); // Formatação da data e hora
-
-  // Adicionando a data e hora à mensagem antes de armazená-la
-  const mensagemComData = `${dataFormatada} - ${mensagem}`;
-
-  // Aqui você pode processar e armazenar a mensagem como preferir
-  listaMensagens.push({ usuario, texto: mensagemComData });
-
-  res.sendStatus(200); // Responde com status 200 (OK)
-});
-
-
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 

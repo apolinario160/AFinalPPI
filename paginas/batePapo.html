@@ -72,19 +72,15 @@
 <body>
   <h1>Bate-papo</h1>
   <div class="chat-container">
-    <!-- Container para entrada de mensagem -->
     <div class="chat-input">
-      <form action="/enviarMensagem" method="POST">
-        <select name="usuario" id="selectUsuario">
-          <!-- Opções preenchidas dinamicamente -->
-        </select>
-        <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required>
+      <form id="messageForm" action="/enviarMensagem" method="POST">
+        <select name="usuario" id="selectUsuario"></select>
+        <input type="text" name="mensagem" id="mensagemInput" placeholder="Digite sua mensagem..." required>
         <button type="submit">Enviar</button>
       </form>
     </div>
-    <!-- Container para exibição de mensagens -->
     <div class="chat-messages" id="mensagens">
-      <h2>Historico de conversa:</h2>
+      <h4>Histórico de conversa:</h4>
       <!-- Exibição das mensagens será carregada aqui -->
     </div>
   </div>
@@ -119,44 +115,49 @@
 
     // Lógica para buscar e exibir as mensagens existentes
     window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const response = await fetch('/mensagens');
-        if (!response.ok) {
-          throw new Error('Erro ao buscar mensagens');
-        }
-        const mensagens = await response.json();
+  try {
+    const response = await fetch('/mensagens');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar mensagens');
+    }
+    const mensagens = await response.json();
 
-        const divMensagens = document.getElementById('mensagens');
-        mensagens.forEach(mensagem => {
-          const mensagemElement = document.createElement('div');
-          const usuarioElement = document.createElement('span');
-          const textoElement = document.createElement('p');
+    const divMensagens = document.getElementById('mensagens');
+    mensagens.forEach(mensagem => {
+      const mensagemElement = document.createElement('div');
+      const usuarioElement = document.createElement('span');
+      const textoElement = document.createElement('p');
+      const horarioElement = document.createElement('span'); // Elemento para o horário
 
-          usuarioElement.textContent = `${mensagem.usuario}: `;
-          textoElement.textContent = mensagem.texto;
+      usuarioElement.textContent = `${mensagem.usuario}: `;
+      textoElement.textContent = mensagem.texto;
+      horarioElement.textContent = ` - ${mensagem.horario}`; // Adicionar horário
+      horarioElement.textContent = ` - ${new Date(mensagem.horario).toLocaleString()}`;
 
-          mensagemElement.appendChild(usuarioElement);
-          mensagemElement.appendChild(textoElement);
+      mensagemElement.appendChild(usuarioElement);
+      mensagemElement.appendChild(textoElement);
+      mensagemElement.appendChild(horarioElement); // Adicionar o elemento do horário
 
-          divMensagens.appendChild(mensagemElement);
-        });
-      } catch (error) {
-        console.error(error);
-      }
+      divMensagens.appendChild(mensagemElement);
     });
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 
     // Lógica para enviar novas mensagens...
-    const form = document.querySelector('form');
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
+    const form = document.getElementById('messageForm');
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
 
-      const usuario = document.getElementById('selectUsuario').value;
-      const mensagem = document.querySelector('input[name="mensagem"]').value;
+  const usuario = document.getElementById('selectUsuario').value;
+  const mensagem = document.getElementById('mensagemInput').value;
 
-      // Atualização da área para exibir a mensagem que será enviada
-      document.getElementById('usuarioEnviado').textContent = usuario;
-      document.getElementById('textoEnviado').textContent = mensagem;
-      document.getElementById('mensagemEnviada').style.display = 'block';
+  // Atualização da área para exibir a mensagem que será enviada
+  document.getElementById('usuarioEnviado').textContent = usuario;
+  document.getElementById('textoEnviado').textContent = mensagem;
+  document.getElementById('mensagemEnviada').style.display = 'block';
 
       try {
         const response = await fetch('/enviarMensagem', {
@@ -171,11 +172,13 @@
           throw new Error('Erro ao enviar mensagem');
         }
 
-       // location.reload(); // Recarregar a página após enviar a mensagem (opcional)
+        location.reload(); // Recarregar a página após enviar a mensagem (opcional)
       } catch (error) {
         console.error(error);
       }
     });
+
+   
   </script>
 
 </body>
