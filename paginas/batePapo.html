@@ -90,6 +90,11 @@
     <p><strong>Usuário:</strong> <span id="usuarioEnviado"></span></p>
     <p><strong>Mensagem:</strong> <span id="textoEnviado"></span></p>
   </div>
+  <div>
+    <ul>
+      <li><a href="/cadastraUsuario.html">Cadastrar Usuário</a></li>
+    </ul>
+  </div>
 
   <script>
     // Lógica para buscar e preencher o select com usuários cadastrados
@@ -113,8 +118,9 @@
       }
     });
 
-    // Lógica para buscar e exibir as mensagens existentes
-    window.addEventListener('DOMContentLoaded', async () => {
+
+// Lógica para buscar e exibir as mensagens existentes
+window.addEventListener('DOMContentLoaded', async () => {
   try {
     const response = await fetch('/mensagens');
     if (!response.ok) {
@@ -127,16 +133,18 @@
       const mensagemElement = document.createElement('div');
       const usuarioElement = document.createElement('span');
       const textoElement = document.createElement('p');
-      const horarioElement = document.createElement('span'); // Elemento para o horário
+      const horarioElement = document.createElement('span');
 
       usuarioElement.textContent = `${mensagem.usuario}: `;
       textoElement.textContent = mensagem.texto;
-      horarioElement.textContent = ` - ${mensagem.horario}`; // Adicionar horário
-      horarioElement.textContent = ` - ${new Date(mensagem.horario).toLocaleString()}`;
+
+      // Formatação da data para exibição
+      const dataFormatada = new Date(mensagem.horario).toLocaleString();
+      horarioElement.textContent = ` - ${dataFormatada}`;
 
       mensagemElement.appendChild(usuarioElement);
       mensagemElement.appendChild(textoElement);
-      mensagemElement.appendChild(horarioElement); // Adicionar o elemento do horário
+      mensagemElement.appendChild(horarioElement);
 
       divMensagens.appendChild(mensagemElement);
     });
@@ -144,6 +152,7 @@
     console.error(error);
   }
 });
+
 
 
     // Lógica para enviar novas mensagens...

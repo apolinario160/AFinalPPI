@@ -297,8 +297,6 @@ app.get('/mensagens', autenticar, (req, res) => {
   res.json(listaMensagens);
 });
 
-
-// Rota para enviar mensagem
 // Rota para enviar mensagem
 app.post('/enviarMensagem', autenticar, (req, res) => {
   const { usuario, mensagem } = req.body;
@@ -311,10 +309,11 @@ app.post('/enviarMensagem', autenticar, (req, res) => {
   const mensagemComData = `${dataFormatada} - ${mensagem}`;
 
   // Aqui você pode processar e armazenar a mensagem como preferir
-  listaMensagens.push({ usuario, texto: mensagemComData });
+  listaMensagens.push({ usuario, texto: mensagemComData, horario: dataHoraAtual }); // Aqui, horario é adicionado
 
   res.sendStatus(200); // Responde com status 200 (OK)
 });
+
   
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
