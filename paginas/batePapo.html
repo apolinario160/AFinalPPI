@@ -112,13 +112,12 @@ window.addEventListener('DOMContentLoaded', async () => {
     const adicionarNovoUsuario = () => {
       const novoNome = mensagemInput.value;
       const novoUsuario = {
-        id: usuarios.length + 1, // Gerar um novo ID (isso pode precisar ser ajustado dependendo da lógica de ID)
         nome: novoNome // Usar o nome digitado como o novo nome do usuário
       };
 
       usuarios.push(novoUsuario); // Adicionar ao array de usuários
       const option = document.createElement('option');
-      option.value = novoUsuario.id;
+      option.value = novoUsuario.nome; // Definir o valor do option como o nome do usuário
       option.textContent = novoUsuario.nome;
       selectUsuario.appendChild(option);
     };
@@ -137,7 +136,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     // Exibir os usuários já existentes no select
     usuarios.forEach(usuario => {
       const option = document.createElement('option');
-      option.value = usuario.id;
+      option.value = usuario.nome; // Usar o nome do usuário como valor do option
       option.textContent = usuario.nome;
       selectUsuario.appendChild(option);
     });
