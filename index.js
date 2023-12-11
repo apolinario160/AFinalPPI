@@ -1,8 +1,10 @@
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import express from 'express';
+import bodyParser from 'body-parser';
 import { fileURLToPath } from 'url';
 import path from 'path';
+
 
 const app = express();
 const porta = 3000;
@@ -20,6 +22,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const diretorioPublico = path.join(__dirname, 'paginas');
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/login.html', (req, res) => {
     res.sendFile(path.join(diretorioPublico, 'login.html'));
@@ -273,17 +277,6 @@ app.post('/login', (requisicao, resposta) => {
 app.get('/batePapo.html', (req, res) => {
     res.sendFile(path.join(diretorioPublico, 'batePapo.html'));
 });
-
-  // Outra rota para '/enviarMensagem', mas com um tratamento diferente
-  app.post('/enviarMensagemOutraRota', (req, res) => {
-    const usuario = req.body.usuario;
-    const mensagem = req.body.mensagem;
-  
-    // Lógica para salvar a mensagem em um array ou banco de dados
-    // ...
-  
-    res.redirect('/batePapo'); // Redirecionar de volta para a página de bate-papo
-  });
   
  
 
@@ -299,22 +292,26 @@ app.get('/mensagens', autenticar, (req, res) => {
 
 // Rota para enviar mensagem
 app.post('/enviarMensagem', autenticar, (req, res) => {
+  debugger
   const { usuario, mensagem } = req.body;
+
+  // Verifique se está recebendo corretamente os dados do frontend
+  console.log('Usuário recebido:', usuario);
+  console.log('Mensagem recebida:', mensagem);
 
   // Obtendo a data e hora atuais
   const dataHoraAtual = new Date();
   const dataFormatada = dataHoraAtual.toLocaleString(); // Formatação da data e hora
 
   // Adicionando a data e hora à mensagem antes de armazená-la
-  const mensagemComData = `${dataFormatada} - ${mensagem}`;
+  const mensagemComData = mensagem;
 
-  // Aqui você pode processar e armazenar a mensagem como preferir
-  listaMensagens.push({ usuario, texto: mensagemComData, horario: dataHoraAtual }); // Aqui, horario é adicionado
+  // Verifique se a listaMensagens está definida corretamente no seu código
+  listaMensagens.push({ user: usuario, texto: mensagemComData, horario: dataHoraAtual }); // Aqui, horario é adicionado
 
   res.sendStatus(200); // Responde com status 200 (OK)
 });
-
-  
+ 
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 
 app.post( '/cadastrarUsuario', autenticar, processaCadastroUsuario);

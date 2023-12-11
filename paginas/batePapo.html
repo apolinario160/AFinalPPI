@@ -84,7 +84,7 @@
       <!-- Exibição das mensagens será carregada aqui -->
     </div>
   </div>
-  <!-- Área para exibir a mensagem que será enviada -->
+
   <div id="mensagemEnviada">
     <h3>Mensagem a ser enviada:</h3>
     <p><strong>Usuário:</strong> <span id="usuarioEnviado"></span></p>
@@ -97,13 +97,15 @@
   </div>
 
   <script>
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const response = await fetch('/listaUsuarios');
-    if (!response.ok) {
+
+    window.addEventListener('DOMContentLoaded', async () => {
+    try {
+    const responseUsuarios = await fetch('/listaUsuarios');
+    if (!responseUsuarios.ok) {
       throw new Error('Erro ao buscar usuários');
     }
-    const usuarios = await response.json();
+    usuarios = await responseUsuarios.json(); // Preencher a variável usuarios com os dados dos usuários
+
 
     const selectUsuario = document.getElementById('selectUsuario');
     const mensagemInput = document.getElementById('mensagemInput');
@@ -146,22 +148,40 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Lógica para buscar e exibir as mensagens existentes
+// ...
+
+// ...
+
+// ...
+
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    const response = await fetch('/mensagens');
-    if (!response.ok) {
+    
+    // ... (seu código para buscar usuários e adicionar novos usuários)
+
+    // Lógica para buscar e exibir as mensagens existentes
+
+    debugger
+    const responseMensagens = await fetch('/mensagens');
+    if (!responseMensagens.ok) {
       throw new Error('Erro ao buscar mensagens');
     }
-    const mensagens = await response.json();
+    const mensagens = await responseMensagens.json();
 
     const divMensagens = document.getElementById('mensagens');
+    divMensagens.innerHTML = ''; // Limpar o conteúdo existente antes de adicionar novas mensagens
+
     mensagens.forEach(mensagem => {
       const mensagemElement = document.createElement('div');
       const usuarioElement = document.createElement('span');
       const textoElement = document.createElement('p');
       const horarioElement = document.createElement('span');
 
-      usuarioElement.textContent = `${mensagem.usuario}: `;
+      // Aqui, verifique se o usuário correspondente à mensagem está na lista de usuários
+      const usuarioEncontrado = usuarios.find(user => user.nome === mensagem.usuario);
+
+      
+      usuarioElement.textContent = `${usuarioEncontrado ? usuarioEncontrado.nome : mensagem.user}: `;
       textoElement.textContent = mensagem.texto;
 
       // Formatação da data para exibição
@@ -179,41 +199,63 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
+// ...
+
+
+// ...
+
+
+// ...
+
+
 
 
     // Lógica para enviar novas mensagens...
-    const form = document.getElementById('messageForm');
+ // Lógica para enviar novas mensagens...
+// Lógica para enviar novas mensagens...
+const form = document.getElementById('messageForm');
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const usuario = document.getElementById('selectUsuario').value;
+  const usuarioNome = document.getElementById('selectUsuario').value; // Obtém o nome do usuário selecionado
+  const usuario = { nome: usuarioNome }; // Cria um objeto de usuário com a propriedade 'nome'
   const mensagem = document.getElementById('mensagemInput').value;
 
+  // Logs de console para verificar os valores capturados
+  console.log('Usuario:', usuario);
+  console.log('Mensagem:', mensagem);
+
   // Atualização da área para exibir a mensagem que será enviada
-  document.getElementById('usuarioEnviado').textContent = usuario;
+  document.getElementById('usuarioEnviado').textContent = usuario.nome;
   document.getElementById('textoEnviado').textContent = mensagem;
   document.getElementById('mensagemEnviada').style.display = 'block';
 
-      try {
-        const response = await fetch('/enviarMensagem', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ usuario, mensagem })
-        });
+  debugger
+  let dados = JSON.stringify({ 
+    "usuario": usuario, 
+    "mensagem": mensagem
+   })
 
-        if (!response.ok) {
-          throw new Error('Erro ao enviar mensagem');
-        }
-
-        location.reload(); // Recarregar a página após enviar a mensagem (opcional)
-      } catch (error) {
-        console.error(error);
-      }
+  try {
+    const response = await fetch('/enviarMensagem', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: dados // Envia o objeto de usuário e a mensagem
     });
 
-   
+    if (!response.ok) {
+      throw new Error('Erro ao enviar mensagem');
+    }
+
+    location.reload(); // Recarregar a página após enviar a mensagem (opcional)
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+  
   </script>
 
 </body>
