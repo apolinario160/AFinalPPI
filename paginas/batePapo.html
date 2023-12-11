@@ -97,27 +97,54 @@
   </div>
 
   <script>
-    // Lógica para buscar e preencher o select com usuários cadastrados
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        const response = await fetch('/listaUsuarios');
-        if (!response.ok) {
-          throw new Error('Erro ao buscar usuários');
-        }
-        const usuarios = await response.json();
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const response = await fetch('/listaUsuarios');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar usuários');
+    }
+    const usuarios = await response.json();
 
-        const selectUsuario = document.getElementById('selectUsuario');
-        usuarios.forEach(usuario => {
-          const option = document.createElement('option');
-          option.value = usuario.id; // Defina o valor do usuário
-          option.textContent = usuario.nome; // Defina o nome do usuário
-          selectUsuario.appendChild(option);
-        });
-      } catch (error) {
-        console.error(error);
+    const selectUsuario = document.getElementById('selectUsuario');
+    const mensagemInput = document.getElementById('mensagemInput');
+    
+    // Função para adicionar um novo usuário ao select
+    const adicionarNovoUsuario = () => {
+      const novoNome = mensagemInput.value;
+      const novoUsuario = {
+        id: usuarios.length + 1, // Gerar um novo ID (isso pode precisar ser ajustado dependendo da lógica de ID)
+        nome: novoNome // Usar o nome digitado como o novo nome do usuário
+      };
+
+      usuarios.push(novoUsuario); // Adicionar ao array de usuários
+      const option = document.createElement('option');
+      option.value = novoUsuario.id;
+      option.textContent = novoUsuario.nome;
+      selectUsuario.appendChild(option);
+    };
+
+    // Adicionar evento ao formulário para capturar o nome digitado e adicionar como novo usuário
+    document.getElementById('messageForm').addEventListener('submit', (event) => {
+      event.preventDefault(); // Impedir o envio do formulário para evitar atualização da página
+      
+      // Verificar se o campo de mensagem está preenchido antes de adicionar o novo usuário
+      if (mensagemInput.value.trim() !== '') {
+        adicionarNovoUsuario();
+        mensagemInput.value = ''; // Limpar o campo de mensagem após adicionar o usuário
       }
     });
 
+    // Exibir os usuários já existentes no select
+    usuarios.forEach(usuario => {
+      const option = document.createElement('option');
+      option.value = usuario.id;
+      option.textContent = usuario.nome;
+      selectUsuario.appendChild(option);
+    });
+  } catch (error) {
+    console.error(error);
+  }
+});
 
 // Lógica para buscar e exibir as mensagens existentes
 window.addEventListener('DOMContentLoaded', async () => {
