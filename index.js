@@ -292,7 +292,6 @@ app.get('/mensagens', autenticar, (req, res) => {
 
 // Rota para enviar mensagem
 app.post('/enviarMensagem', autenticar, (req, res) => {
-  debugger
   const { usuario, mensagem } = req.body;
 
   // Verifique se está recebendo corretamente os dados do frontend
@@ -306,11 +305,11 @@ app.post('/enviarMensagem', autenticar, (req, res) => {
   // Adicionando a data e hora à mensagem antes de armazená-la
   const mensagemComData = mensagem;
 
-  // Verifique se a listaMensagens está definida corretamente no seu código
   listaMensagens.push({ user: usuario, texto: mensagemComData, horario: dataHoraAtual }); // Aqui, horario é adicionado
 
   res.sendStatus(200); // Responde com status 200 (OK)
 });
+
  
 //Rota para processar o cadastro de usuário endpoint ='/cadastraUsuario'
 

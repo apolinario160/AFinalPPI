@@ -217,24 +217,22 @@ const form = document.getElementById('messageForm');
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
-  const usuarioNome = document.getElementById('selectUsuario').value; // Obtém o nome do usuário selecionado
-  const usuario = { nome: usuarioNome }; // Cria um objeto de usuário com a propriedade 'nome'
+  const usuarioNome = document.getElementById('selectUsuario').value;
   const mensagem = document.getElementById('mensagemInput').value;
 
+  // Criando o objeto a ser enviado para o backend
+  const dados = {
+    usuario: usuarioNome, // Atribuindo apenas o nome do usuário
+    mensagem: mensagem
+  };
+
   // Logs de console para verificar os valores capturados
-  console.log('Usuario:', usuario);
-  console.log('Mensagem:', mensagem);
+  console.log('Dados a serem enviados:', dados);
 
   // Atualização da área para exibir a mensagem que será enviada
-  document.getElementById('usuarioEnviado').textContent = usuario.nome;
+  document.getElementById('usuarioEnviado').textContent = usuarioNome;
   document.getElementById('textoEnviado').textContent = mensagem;
   document.getElementById('mensagemEnviada').style.display = 'block';
-
-  debugger
-  let dados = JSON.stringify({ 
-    "usuario": usuario, 
-    "mensagem": mensagem
-   })
 
   try {
     const response = await fetch('/enviarMensagem', {
@@ -242,7 +240,7 @@ form.addEventListener('submit', async (event) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: dados // Envia o objeto de usuário e a mensagem
+      body: JSON.stringify(dados) // Envia o objeto corrigido para o backend
     });
 
     if (!response.ok) {
@@ -254,6 +252,7 @@ form.addEventListener('submit', async (event) => {
     console.error(error);
   }
 });
+
 
   
   </script>
