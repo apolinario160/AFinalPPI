@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bate-papo</title>
   <style>
-    /* Estilos adicionais para dividir a página em duas partes */
+  
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -148,20 +148,12 @@
 });
 
 // Lógica para buscar e exibir as mensagens existentes
-// ...
-
-// ...
-
-// ...
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
-    
-    // ... (seu código para buscar usuários e adicionar novos usuários)
+       // Lógica para buscar e exibir as mensagens existentes
 
-    // Lógica para buscar e exibir as mensagens existentes
 
-    debugger
     const responseMensagens = await fetch('/mensagens');
     if (!responseMensagens.ok) {
       throw new Error('Erro ao buscar mensagens');
@@ -199,19 +191,6 @@ window.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// ...
-
-
-// ...
-
-
-// ...
-
-
-
-
-    // Lógica para enviar novas mensagens...
- // Lógica para enviar novas mensagens...
 // Lógica para enviar novas mensagens...
 const form = document.getElementById('messageForm');
 form.addEventListener('submit', async (event) => {
@@ -251,10 +230,7 @@ form.addEventListener('submit', async (event) => {
   } catch (error) {
     console.error(error);
   }
-});
-
-
-  
+});  
   </script>
 
 </body>
